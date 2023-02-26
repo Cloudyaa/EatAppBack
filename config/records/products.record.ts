@@ -36,6 +36,7 @@ export class ProductsRecord implements ProductEntity {
       obj.saturates < 0 ||
       obj.saturates > 99.99 ||
       obj.sugars < 0 ||
+      obj.sugars > 99.99 ||
       obj.saturates > 99.99 ||
       obj.salt < 0 ||
       obj.salt > 99.99
