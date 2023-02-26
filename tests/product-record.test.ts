@@ -8,8 +8,13 @@ test('Can build ProductsRecord', () => {
   expect(testProduct.description).toBe('Test description');
   expect(testProduct.price).toStrictEqual(99.99);
   expect(testProduct.energy).toStrictEqual(100);
+  expect(testProduct.lifeInDays).toStrictEqual(360);
   expect(
-    testProduct.fat && testProduct.saturates && testProduct.sugars && testProduct.salt,
+    testProduct.fat &&
+      testProduct.protein &&
+      testProduct.fibre &&
+      testProduct.sugars &&
+      testProduct.salt,
   ).toStrictEqual(20.5);
 });
 
@@ -92,7 +97,14 @@ test('Throws when invalid nutrition data provided', () => {
     () =>
       new ProductRecord({
         ...testProduct,
-        saturates: -1,
+        protein: -1,
+      }),
+  ).toThrow(errMessage);
+  expect(
+    () =>
+      new ProductRecord({
+        ...testProduct,
+        fibre: -1,
       }),
   ).toThrow(errMessage);
   expect(
@@ -120,7 +132,14 @@ test('Throws when invalid nutrition data provided', () => {
     () =>
       new ProductRecord({
         ...testProduct,
-        saturates: 100,
+        protein: 100,
+      }),
+  ).toThrow(errMessage);
+  expect(
+    () =>
+      new ProductRecord({
+        ...testProduct,
+        fibre: 100,
       }),
   ).toThrow(errMessage);
   expect(
