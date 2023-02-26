@@ -13,3 +13,8 @@ test('ProductRecord returns data from database for one entry', async () => {
   expect(product?.sugars).toStrictEqual(2.5);
   expect(product?.salt).toStrictEqual(0.01);
 });
+
+test('ProductRecord returns null from database for not existing entry', async () => {
+  const ad = await ProductRecord.getOne('loremIpsum');
+  expect(ad).toBeNull();
+});
