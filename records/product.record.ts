@@ -1,4 +1,4 @@
-import { NewProductEntity, ProductEntity } from '../types';
+import { NewProductEntity, ProductEntity, SimpleProductEntity } from '../types';
 import { ValidationError } from '../utlis/errors';
 import { FieldPacket } from 'mysql2';
 import { pool } from '../utlis/db';
@@ -59,7 +59,7 @@ export class ProductRecord implements ProductEntity {
     obj.id ? (this.id = obj.id) : null;
     this.name = obj.name;
     this.price = obj.price;
-    this.qtyInBasket = obj.qtyInBasket;
+    obj.qtyInBasket ? (this.qtyInBasket = obj.qtyInBasket) : (this.qtyInBasket = 0);
     this.description = obj.description;
     this.lifeInDays = obj.lifeInDays;
     this.energy = obj.energy;
@@ -91,5 +91,20 @@ export class ProductRecord implements ProductEntity {
     );
 
     return this.id;
+  }
+
+  static async find(name: string): Promise<SimpleProductEntity[]> {
+    const [results] = (await pool.execute('SELECT * FROM `products` WHERE `name` LIKE :search', {
+      search: `%${name}%`,
+    })) as ProductsRecordResults;
+
+    return results.map((result) => {
+      const { id, name, price } = result;
+      return {
+        id,
+        name,
+        price,
+      };
+    });
   }
 }
