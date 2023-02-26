@@ -12,9 +12,10 @@ export class ProductRecord implements ProductEntity {
   price: number;
   qtyInBasket?: number;
   description: string;
+  lifeInDays: number;
   energy: number;
   fat: number;
-  protein: number
+  protein: number;
   fibre: number;
   sugars: number;
   salt: number;
@@ -26,6 +27,10 @@ export class ProductRecord implements ProductEntity {
 
     if (obj.description.length > 1000) {
       throw new ValidationError('Product description cannot exceed 1000 characters');
+    }
+
+    if (obj.lifeInDays < 0 || obj.lifeInDays > 366) {
+      throw new ValidationError('Product life cannot be negative or exceed one year');
     }
 
     if (obj.price < 0 || obj.price > 99.99) {
@@ -56,6 +61,7 @@ export class ProductRecord implements ProductEntity {
     this.price = obj.price;
     this.qtyInBasket = obj.qtyInBasket;
     this.description = obj.description;
+    this.lifeInDays = obj.lifeInDays;
     this.energy = obj.energy;
     this.fat = obj.fat;
     this.protein = obj.protein;
@@ -80,7 +86,7 @@ export class ProductRecord implements ProductEntity {
     }
 
     await pool.execute(
-      'INSERT INTO `products` VALUES (:id, :name, :description, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
+      'INSERT INTO `products` VALUES (:id, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
       this,
     );
 

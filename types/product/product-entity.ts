@@ -16,6 +16,7 @@ export interface Nutrition {
 
 export interface ProductEntity extends SimpleProductEntity, Nutrition {
   description: string;
+  lifeInDays: number;
 }
 
 export interface NewProductEntity extends Omit<ProductEntity, 'id'> {
