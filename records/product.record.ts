@@ -1,7 +1,11 @@
-import { NewProductEntity, ProductEntity } from '../../types';
-import { ValidationError } from '../../utlis/errors';
+import { NewProductEntity, ProductEntity } from '../types';
+import { ValidationError } from '../utlis/errors';
+import { FieldPacket } from 'mysql2';
+import { pool } from '../utlis/db';
 
-export class ProductsRecord implements ProductEntity {
+type ProductsRecordResults = [ProductEntity[], FieldPacket[]];
+
+export class ProductRecord implements ProductEntity {
   id: string;
   name: string;
   price: number;
@@ -54,5 +58,13 @@ export class ProductsRecord implements ProductEntity {
     this.saturates = obj.saturates;
     this.sugars = obj.sugars;
     this.salt = obj.salt;
+  }
+
+  static async getOne(id: string): Promise<ProductRecord | null> {
+    const [results] = (await pool.execute('SELECT * FROM `products` WHERE `id` = :id', {
+      id,
+    })) as ProductsRecordResults;
+
+    return results.length === 0 ? null : new ProductRecord(results[0]);
   }
 }
