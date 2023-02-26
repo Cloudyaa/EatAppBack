@@ -1,7 +1,7 @@
-import { ProductsRecord } from '../config/records/products.record';
+import { ProductRecord } from '../records/product.record';
 
-test('ProductsRecord returns data from database for one entry', async () => {
-  const product = await ProductsRecord.getOne('test_id');
+test('ProductRecord returns data from database for one entry', async () => {
+  const product = await ProductRecord.getOne('test_id');
   expect(product).toBeDefined();
   expect(product?.id).toBe('test_id');
   expect(product?.name).toBe('test_product');
