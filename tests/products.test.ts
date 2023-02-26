@@ -1,4 +1,5 @@
 import { ProductRecord } from '../records/product.record';
+import { testProduct } from './testingRecord';
 
 test('ProductRecord returns data from database for one entry', async () => {
   const product = await ProductRecord.getOne('test_id');
@@ -17,4 +18,17 @@ test('ProductRecord returns data from database for one entry', async () => {
 test('ProductRecord returns null from database for not existing entry', async () => {
   const ad = await ProductRecord.getOne('loremIpsum');
   expect(ad).toBeNull();
+});
+
+test('ProductRecord.insert inserts data to database', async () => {
+  const product = new ProductRecord({
+    ...testProduct,
+  });
+
+  await product.insert();
+
+  const newProduct = await ProductRecord.getOne(product.id);
+  expect(newProduct).toBeDefined();
+  expect(newProduct).not.toBeNull();
+  expect(newProduct?.id).toBe(product.id);
 });
