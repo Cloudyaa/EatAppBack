@@ -14,7 +14,8 @@ export class ProductRecord implements ProductEntity {
   description: string;
   energy: number;
   fat: number;
-  saturates: number;
+  protein: number
+  fibre: number;
   sugars: number;
   salt: number;
 
@@ -38,11 +39,12 @@ export class ProductRecord implements ProductEntity {
     if (
       obj.fat < 0 ||
       obj.fat > 99.99 ||
-      obj.saturates < 0 ||
-      obj.saturates > 99.99 ||
+      obj.protein < 0 ||
+      obj.protein > 99.99 ||
+      obj.fibre < 0 ||
+      obj.fibre > 99.99 ||
       obj.sugars < 0 ||
       obj.sugars > 99.99 ||
-      obj.saturates > 99.99 ||
       obj.salt < 0 ||
       obj.salt > 99.99
     ) {
@@ -56,7 +58,8 @@ export class ProductRecord implements ProductEntity {
     this.description = obj.description;
     this.energy = obj.energy;
     this.fat = obj.fat;
-    this.saturates = obj.saturates;
+    this.protein = obj.protein;
+    this.fibre = obj.fibre;
     this.sugars = obj.sugars;
     this.salt = obj.salt;
   }
@@ -77,7 +80,7 @@ export class ProductRecord implements ProductEntity {
     }
 
     await pool.execute(
-      'INSERT INTO `products` VALUES (:id, :name, :description, :price, :energy, :fat, :saturates, :sugars, :salt)',
+      'INSERT INTO `products` VALUES (:id, :name, :description, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
       this,
     );
 
