@@ -2,6 +2,7 @@ import { NewProductEntity, ProductEntity } from '../types';
 import { ValidationError } from '../utlis/errors';
 import { FieldPacket } from 'mysql2';
 import { pool } from '../utlis/db';
+import { v4 as uuid } from 'uuid';
 
 type ProductsRecordResults = [ProductEntity[], FieldPacket[]];
 
@@ -66,5 +67,20 @@ export class ProductRecord implements ProductEntity {
     })) as ProductsRecordResults;
 
     return results.length === 0 ? null : new ProductRecord(results[0]);
+  }
+
+  async insert(): Promise<string> {
+    if (!this.id) {
+      this.id = uuid();
+    } else {
+      throw new Error('Cannot insert something that is already in database');
+    }
+
+    await pool.execute(
+      'INSERT INTO `products` VALUES (:id, :name, :description, :price, :energy, :fat, :saturates, :sugars, :salt)',
+      this,
+    );
+
+    return this.id;
   }
 }
