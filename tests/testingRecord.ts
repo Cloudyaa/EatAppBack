@@ -8,7 +8,7 @@ export const testProduct: NewProductEntity = {
   energy: 100,
   fat: 20.5,
   protein: 20.5,
-  fibre: 0,
-  sugars: 0.5,
-  salt: 0.99,
+  fibre: 20.5,
+  sugars: 20.5,
+  salt: 20.5,
 };
