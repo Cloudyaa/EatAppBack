@@ -7,6 +7,6 @@ export const testProduct: NewProductEntity = {
   energy: 100,
   fat: 20.5,
   saturates: 20.5,
-  sugars: 20.5,
-  salt: 20.5,
+  sugars: 0.5,
+  salt: 0.99,
 };
