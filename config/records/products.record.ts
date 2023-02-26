@@ -5,7 +5,7 @@ export class ProductsRecord implements ProductEntity {
   id: string;
   name: string;
   price: number;
-  qtyInBasket: number;
+  qtyInBasket?: number;
   description: string;
   energy: number;
   fat: number;
@@ -26,9 +26,11 @@ export class ProductsRecord implements ProductEntity {
       throw new ValidationError('Price cannot be negative or greater than 99.99');
     }
 
+    if (obj.energy < 0 || obj.energy > 500) {
+      throw new ValidationError('Energy cannot be negative or greater than 500 kcal');
+    }
+
     if (
-      obj.energy < 0 ||
-      obj.energy > 99.99 ||
       obj.fat < 0 ||
       obj.fat > 99.99 ||
       obj.saturates < 0 ||
@@ -38,7 +40,7 @@ export class ProductsRecord implements ProductEntity {
       obj.salt < 0 ||
       obj.salt > 99.99
     ) {
-      throw new ValidationError('Nutrition data cannot be negative or greater than 99.99');
+      throw new ValidationError('Nutrition data cannot be negative or greater than 99.99g');
     }
 
     obj.id ? (this.id = obj.id) : null;
