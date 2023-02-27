@@ -1,5 +1,5 @@
 export interface SimpleProductEntity {
-  id: string;
+  product_id: string;
   name: string;
   price: number;
   qtyInBasket?: number;
@@ -19,6 +19,6 @@ export interface ProductEntity extends SimpleProductEntity, Nutrition {
   lifeInDays: number;
 }
 
-export interface NewProductEntity extends Omit<ProductEntity, 'id'> {
-  id?: string;
+export interface NewProductEntity extends Omit<ProductEntity, 'product_id'> {
+  product_id?: string;
 }

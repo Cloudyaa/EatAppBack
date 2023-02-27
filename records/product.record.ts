@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 type ProductsRecordResults = [ProductEntity[], FieldPacket[]];
 
 export class ProductRecord implements ProductEntity {
-  id: string;
+  product_id: string;
   name: string;
   price: number;
   qtyInBasket?: number;
@@ -56,7 +56,7 @@ export class ProductRecord implements ProductEntity {
       throw new ValidationError('Nutrition data cannot be negative or greater than 99.99g');
     }
 
-    obj.id ? (this.id = obj.id) : null;
+    obj.product_id ? (this.product_id = obj.product_id) : null;
     this.name = obj.name;
     this.price = obj.price;
     obj.qtyInBasket ? (this.qtyInBasket = obj.qtyInBasket) : (this.qtyInBasket = 0);
@@ -71,7 +71,7 @@ export class ProductRecord implements ProductEntity {
   }
 
   static async getOne(id: string): Promise<ProductRecord | null> {
-    const [results] = (await pool.execute('SELECT * FROM `products` WHERE `id` = :id', {
+    const [results] = (await pool.execute('SELECT * FROM `products` WHERE `product_id` = :product_id', {
       id,
     })) as ProductsRecordResults;
 
@@ -79,18 +79,18 @@ export class ProductRecord implements ProductEntity {
   }
 
   async insert(): Promise<string> {
-    if (!this.id) {
-      this.id = uuid();
+    if (!this.product_id) {
+      this.product_id = uuid();
     } else {
       throw new Error('Cannot insert something that is already in database');
     }
 
     await pool.execute(
-      'INSERT INTO `products` VALUES (:id, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
+      'INSERT INTO `products` VALUES (:product_id, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
       this,
     );
 
-    return this.id;
+    return this.product_id;
   }
 
   static async find(name: string): Promise<SimpleProductEntity[]> {
@@ -99,9 +99,9 @@ export class ProductRecord implements ProductEntity {
     })) as ProductsRecordResults;
 
     return results.map((result) => {
-      const { id, name, price } = result;
+      const { product_id, name, price } = result;
       return {
-        id,
+        product_id,
         name,
         price,
       };
