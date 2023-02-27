@@ -8,7 +8,7 @@ afterAll(async () => {
   await pool.end();
 });
 
-// -- testing insert(product_id) method
+// -- testing insert(productId) method
 test('ProductRecord.insert inserts data to database', async () => {
   const product = new ProductRecord({
     ...testProduct,
@@ -16,18 +16,18 @@ test('ProductRecord.insert inserts data to database', async () => {
 
   await product.insert();
 
-  const newProduct = await ProductRecord.getOne(product.product_id);
+  const newProduct = await ProductRecord.getOne(product.productId);
   expect(newProduct).toBeDefined();
   expect(newProduct).not.toBeNull();
-  expect(newProduct?.product_id).toBe(product.product_id);
+  expect(newProduct?.productId).toBe(product.productId);
 });
-// -- end of testing insert(product_id) method
+// -- end of testing insert(productId) method
 
 // -- testing getOne() method
 test('ProductRecord returns data from database for one entry', async () => {
   const product = await ProductRecord.getOne('8aad8b13-ef02-4730-8456-3cd89c1f146d');
   expect(product).toBeDefined();
-  expect(product?.product_id).toBe('8aad8b13-ef02-4730-8456-3cd89c1f146d');
+  expect(product?.productId).toBe('8aad8b13-ef02-4730-8456-3cd89c1f146d');
   expect(product?.name).toBe('tomatoes');
   expect(product?.description).toBe(
     'Sweet and juicy vine-ripened Class I Rosa tomatoes. Wash before use. Source of Vitamin C. 1 of your 5 a day.Product life guaranteed for 3 days excluding delivery day, with an average of 4 days.',
@@ -68,6 +68,13 @@ test('ProductRecord.find returns empty array when searching for something that d
 test('ProductRecord.find returns array of found entries when searching for "a"', async () => {
   const products = await ProductRecord.find('a');
   expect(products).not.toHaveLength(0);
-  expect(products[0].product_id).toBeDefined();
+  expect(products[0].productId).toBeDefined();
 });
 // -- end of testing find() method
+
+// -- testing getBestsellers() method
+test('ProductRecord.getBestsellers returns exactly 3 records', async () => {
+  const products = await ProductRecord.getBestsellers();
+  expect(products.length).toStrictEqual(3);
+});
+// -- end of testing getBestsellers() method
