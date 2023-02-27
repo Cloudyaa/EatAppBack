@@ -22,7 +22,17 @@ productsRouter
     }
   })
 
-  // get one product if id is found
+  // get bestselling products
+  .get('/bestsellers', async (req, res) => {
+    const products = await ProductRecord.getBestsellers();
+    if (products === null) {
+      res.json(`No best selling products were found yet`);
+    } else {
+      res.json(products);
+    }
+  })
+
+  // get one product if productId is found
   .get('/:id', async (req, res) => {
     const product = await ProductRecord.getOne(req.params.id);
     if (product === null) {
