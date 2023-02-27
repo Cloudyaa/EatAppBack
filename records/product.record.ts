@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 type ProductsRecordResults = [ProductEntity[], FieldPacket[]];
 
 export class ProductRecord implements ProductEntity {
-  product_id: string;
+  productId: string;
   name: string;
   price: number;
   qtyInBasket?: number;
@@ -56,7 +56,7 @@ export class ProductRecord implements ProductEntity {
       throw new ValidationError('Nutrition data cannot be negative or greater than 99.99g');
     }
 
-    obj.product_id ? (this.product_id = obj.product_id) : null;
+    obj.productId ? (this.productId = obj.productId) : null;
     this.name = obj.name;
     this.price = obj.price;
     obj.qtyInBasket ? (this.qtyInBasket = obj.qtyInBasket) : (this.qtyInBasket = 0);
@@ -71,7 +71,7 @@ export class ProductRecord implements ProductEntity {
   }
 
   static async getOne(id: string): Promise<ProductRecord | null> {
-    const [results] = (await pool.execute('SELECT * FROM `products` WHERE `product_id` = :product_id', {
+    const [results] = (await pool.execute('SELECT * FROM `products` WHERE `productId` = :id', {
       id,
     })) as ProductsRecordResults;
 
@@ -79,18 +79,18 @@ export class ProductRecord implements ProductEntity {
   }
 
   async insert(): Promise<string> {
-    if (!this.product_id) {
-      this.product_id = uuid();
+    if (!this.productId) {
+      this.productId = uuid();
     } else {
       throw new Error('Cannot insert something that is already in database');
     }
 
     await pool.execute(
-      'INSERT INTO `products` VALUES (:product_id, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
+      'INSERT INTO `products` VALUES (:productId, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
       this,
     );
 
-    return this.product_id;
+    return this.productId;
   }
 
   static async find(name: string): Promise<SimpleProductEntity[]> {
@@ -99,9 +99,24 @@ export class ProductRecord implements ProductEntity {
     })) as ProductsRecordResults;
 
     return results.map((result) => {
-      const { product_id, name, price } = result;
+      const { productId, name, price } = result;
       return {
-        product_id,
+        productId,
+        name,
+        price,
+      };
+    });
+  }
+
+  static async getBestsellers(): Promise<SimpleProductEntity[]> {
+    const [results] = (await pool.execute(
+      'SELECT `p`.`productId`, `p`.`name`, `p`.`price`, COUNT(*) AS `order_count` FROM `products` `p` JOIN `order_details` ON `p`.`productId` = `order_details`.`productId` GROUP BY `p`.`productId`ORDER BY `order_count` DESC LIMIT 3',
+    )) as ProductsRecordResults;
+
+    return results.map((result) => {
+      const { productId, name, price } = result;
+      return {
+        productId,
         name,
         price,
       };
