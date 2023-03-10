@@ -4,7 +4,7 @@ import { ProductRecord } from '../records/product.record';
 export const productsRouter = Router();
 
 productsRouter
-  // get all products when empty string provided
+  // get all products when empty string provided or search result
   .get('/search/:name?', async (req, res) => {
     const found = await ProductRecord.find(req.params.name ?? '');
 
