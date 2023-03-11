@@ -6,6 +6,7 @@ import 'express-rate-limit';
 import { handleError } from './utlis/errors';
 import { config } from './config/config';
 import { productsRouter } from './routes/products.router';
+import { usersRouter } from './routes/users.router';
 
 const app = express();
 
@@ -23,7 +24,8 @@ app.use(
 );
 
 //routes
-app.use('/products', productsRouter);
+app.use('api/products', productsRouter);
+app.use('api/user', usersRouter);
 //end of routes
 app.use(handleError);
 
