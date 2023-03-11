@@ -1,5 +1,5 @@
-import { testProduct } from './testingRecord';
-import { ProductRecord } from '../records/product.record';
+import { testProduct } from '../testingRecords';
+import { ProductRecord } from '../../records/product.record';
 
 let errMessage: string;
 
