@@ -1,5 +1,5 @@
 import { pool } from '../../utlis/db';
-import { UserRecord } from '../../records/user.record';
+import { UserRecord } from '../../account/user/user.record';
 import { testUser } from '../testingRecords';
 
 afterAll(async () => {
@@ -7,7 +7,7 @@ afterAll(async () => {
   await pool.end();
 });
 
-// -- testing insert(productId) method
+// -- testing insert() method
 test('UserRecord.insert inserts data to database', async () => {
   const user = new UserRecord({
     ...testUser,
@@ -15,27 +15,41 @@ test('UserRecord.insert inserts data to database', async () => {
 
   await user.insert();
 
-  const newUser = await UserRecord.getOne(user.userId);
+  const newUser = await UserRecord.findByEmail(user.email);
   expect(newUser).toBeDefined();
   expect(newUser).not.toBeNull();
   expect(newUser?.userId).toBe(user.userId);
 });
 // -- end of testing insert(productId) method
 
-// -- testing getOne() method
+// -- testing findByEmail() method
 test('UserRecord returns data from database for one entry', async () => {
-  const user = await UserRecord.getOne('test_user');
+  const user = await UserRecord.findByEmail('user@eat.com');
   expect(user).toBeDefined();
-  expect(user?.userId).toBe('test_user');
+  expect(user?.userId).toBe('86ba84a3-d5ad-409f-9083-40caff1e4af5');
   expect(user?.email).toBe('user@eat.com');
-  expect(user?.password).toBe('12345678');
+  expect(user?.password).toBeTruthy();
 });
 
 test('UserRecord returns null from database for not existing entry', async () => {
-  const user = await UserRecord.getOne('loremIpsum');
+  const user = await UserRecord.findByEmail('loremIpsum');
   expect(user).toBeNull();
 });
-// --end of testing getOne() method
+// --end of testing findByEmail() method
+
+// -- testing findById() method
+test('UserRecord returns data from database for one entry', async () => {
+  const user = await UserRecord.findById('86ba84a3-d5ad-409f-9083-40caff1e4af5');
+  expect(user).toBeDefined();
+  expect(user?.userId).toBe('86ba84a3-d5ad-409f-9083-40caff1e4af5');
+  expect(user?.email).toBe('user@eat.com');
+});
+
+test('UserRecord returns null from database for not existing entry', async () => {
+  const user = await UserRecord.findById('loremIpsum');
+  expect(user).toBeNull();
+});
+// --end of testing findById() method
 
 // -- testing getAll() method
 test('UserRecord.getAll returns only desired amount of data', async () => {

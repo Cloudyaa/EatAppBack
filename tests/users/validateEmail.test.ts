@@ -1,4 +1,4 @@
-import { validateEmail } from '../../user/validateEmail';
+import { validateEmail } from '../../account/validateEmail';
 
 let errMessage: string;
 
