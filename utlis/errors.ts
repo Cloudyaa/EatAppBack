@@ -10,7 +10,13 @@ export const handleError = (err: Error, req: Request, res: Response, next: NextF
     .status(err instanceof ValidationError ? 400 : 500)
     .json({
       message: err instanceof ValidationError
-        ? err.message
-        : 'Sorry, please try again later',
-  });
+        ? {
+          status: res.statusCode,
+          message: err.message
+        }
+        : {
+          status: res.statusCode,
+          message: "Sorry, please try again later"
+        }
+    });
 };
