@@ -1,7 +1,7 @@
-import { ProductRecord } from '../../records/product.record';
+import { pool } from '../../utlis';
+import { testProduct } from './testingRecord';
+import { ProductRecord } from '../../records';
 import { ProductEntity } from '../../types';
-import { pool } from '../../utlis/db';
-import { testProduct } from '../testingRecords';
 
 afterAll(async () => {
   await pool.execute("DELETE FROM `products` WHERE `name` = 'Test name'");

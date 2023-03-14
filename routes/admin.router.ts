@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { authMiddleware } from '../../middleware/auth.middleware';
-import { UserRecord } from '../user/user.record';
+import { authMiddleware } from '../middleware/auth.middleware';
+import { UserRecord } from "../records";
+
 
 export const adminRouter = Router();
 

@@ -1,5 +1,5 @@
-import { testUser } from '../testingRecords';
-import { UserRecord } from '../../account/user/user.record';
+import { testUser } from './testingRecord';
+import { UserRecord } from '../../records';
 
 test('Can build UserRecord', () => {
   const test = new UserRecord({ ...testUser });

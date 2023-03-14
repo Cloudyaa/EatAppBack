@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { UserRecord } from './user.record';
-import { authMiddleware } from '../../middleware/auth.middleware';
+import { authMiddleware } from '../middleware/auth.middleware';
+import { UserRecord } from "../records";
 
 export const userRouter = Router();
 

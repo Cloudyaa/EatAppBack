@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import { hash, compare } from 'bcrypt';
 import jwt, { Secret } from 'jsonwebtoken';
-import { UserRecord } from './user/user.record';
-import { validateEmail } from './validateEmail';
-import { validatePassword } from './validatePassword';
+import { UserRecord } from '../records';
+import { validateEmail, validatePassword } from '../utlis';
 
 const JWT_SECRET: Secret = process.env.JWT_SECRET || 'default_secret';
 

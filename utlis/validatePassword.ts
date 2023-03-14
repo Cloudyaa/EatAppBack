@@ -1,4 +1,4 @@
-import { ValidationError } from '../utlis/errors';
+import { ValidationError } from './errors';
 
 export const validatePassword = (password: string) => {
   const passwordRegex =

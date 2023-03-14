@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
+import { UserRecord } from '../records';
 import { AuthUser } from '../types';
-import { UserRecord } from '../account/user/user.record';
 
 const JWT_SECRET: Secret = process.env.JWT_SECRET || 'default_secret';
 

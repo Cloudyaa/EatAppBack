@@ -1,8 +1,7 @@
 import { NewProductEntity, ProductEntity, SimpleProductEntity } from '../types';
-import { ValidationError } from '../utlis/errors';
 import { FieldPacket } from 'mysql2';
-import { pool } from '../utlis/db';
 import { v4 as uuid } from 'uuid';
+import { pool, ValidationError } from "../utlis";
 
 type ProductsRecordResults = [ProductEntity[], FieldPacket[]];
 

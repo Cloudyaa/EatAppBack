@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { ProductRecord } from '../records/product.record';
+import { ProductRecord } from "../records";
+
 
 export const productsRouter = Router();
 

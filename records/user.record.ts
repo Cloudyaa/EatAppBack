@@ -1,8 +1,8 @@
-import { FieldPacket } from 'mysql2';
-import { pool } from '../../utlis/db';
-import { v4 as uuid } from 'uuid';
-import { NewUserEntity, SafeUserEntity, SimpleUserEntity, UserEntity } from '../../types';
 import moment from 'moment';
+import { FieldPacket } from 'mysql2';
+import { v4 as uuid } from 'uuid';
+import { NewUserEntity, SafeUserEntity, SimpleUserEntity, UserEntity } from '../types';
+import { pool } from "../utlis";
 
 type UserRecordResults = [UserEntity[], FieldPacket[]];
 type SafeUserRecordResults = [SafeUserEntity[], FieldPacket[]];

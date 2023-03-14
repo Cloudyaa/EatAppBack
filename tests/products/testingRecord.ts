@@ -1,4 +1,4 @@
-import { NewProductEntity, NewUserEntity } from '../types';
+import { NewProductEntity } from '../../types';
 
 export const testProduct: NewProductEntity = {
   name: 'Test name',
@@ -11,12 +11,6 @@ export const testProduct: NewProductEntity = {
   fibre: 20.5,
   sugars: 20.5,
   salt: 20.5,
-};
-
-export const testUser: NewUserEntity = {
-  email: 'test@example.com',
-  password: 'c7HJ3:KI%5',
-  role: 'user',
 };
 
 export const stringOver1000 =

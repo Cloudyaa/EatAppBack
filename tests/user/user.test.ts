@@ -1,6 +1,6 @@
-import { pool } from '../../utlis/db';
-import { UserRecord } from '../../account/user/user.record';
-import { testUser } from '../testingRecords';
+import { pool } from '../../utlis';
+import { testUser } from './testingRecord';
+import { UserRecord } from '../../records';
 
 afterAll(async () => {
   await pool.execute("DELETE FROM `users` WHERE `email` = 'test@example.com'");

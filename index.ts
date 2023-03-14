@@ -4,12 +4,9 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import 'express-async-errors';
 import 'express-rate-limit';
-import { handleError } from './utlis/errors';
+import { handleError } from "./utlis";
 import { config } from './config/config';
-import { productsRouter } from './routes/products.router';
-import { userRouter } from './account/user/user.router';
-import { adminRouter } from './account/admin/admin.router';
-import { accountRouter } from './account/account.router';
+import { accountRouter, adminRouter, productsRouter, userRouter } from './routes';
 
 dotenv.config();
 
@@ -34,6 +31,7 @@ app.use('/api/account', accountRouter);
 app.use('/api/user', userRouter);
 app.use('/api/admin', adminRouter);
 //end of routes
+
 app.use(handleError);
 
 app.listen(3001, 'localhost', () => {

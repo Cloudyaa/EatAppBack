@@ -1,4 +1,4 @@
-import { ValidationError } from '../utlis/errors';
+import { ValidationError } from './errors';
 
 export const validateEmail = (email: string) => {
   const emailRegex =
