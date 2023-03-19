@@ -1,7 +1,7 @@
 import { NewProductEntity, ProductEntity, SimpleProductEntity } from '../types';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
-import { pool, ValidationError } from "../utlis";
+import { pool, ValidationError } from '../utlis';
 
 type ProductsRecordResults = [ProductEntity[], FieldPacket[]];
 
@@ -109,7 +109,12 @@ export class ProductRecord implements ProductEntity {
 
   static async getBestsellers(): Promise<SimpleProductEntity[]> {
     const [results] = (await pool.execute(
-      'SELECT `p`.`productId`, `p`.`name`, `p`.`price`, COUNT(*) AS `order_count` FROM `products` `p` JOIN `order_details` ON `p`.`productId` = `order_details`.`productId` GROUP BY `p`.`productId`ORDER BY `order_count` DESC LIMIT 3',
+      'SELECT p.productId, p.name, p.price, COUNT(*) AS order_count, SUM(order_details.orderedQty) AS total_ordered_qty\n' +
+        'FROM products p\n' +
+        'JOIN order_details ON p.productId = order_details.productId\n' +
+        'GROUP BY p.productId\n' +
+        'ORDER BY order_count DESC, total_ordered_qty DESC\n' +
+        'LIMIT 3;',
     )) as ProductsRecordResults;
 
     return results.map((result) => {
