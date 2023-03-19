@@ -3,6 +3,7 @@ import { hash, compare } from 'bcrypt';
 import jwt, { Secret } from 'jsonwebtoken';
 import { UserRecord } from '../records';
 import { validateEmail, validatePassword } from '../utlis';
+import { AccountLoginDto, AccountSignupDto } from '../types';
 
 const JWT_SECRET: Secret = process.env.JWT_SECRET || 'default_secret';
 
@@ -10,7 +11,7 @@ export const accountRouter = Router();
 
 accountRouter
   .post('/signup', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, confirmPassword }: AccountSignupDto = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -19,12 +20,19 @@ accountRouter
       });
     }
 
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        status: res.statusCode,
+        message: 'Password does not match',
+      });
+    }
+
     const isAlreadySigned = await UserRecord.findByEmail(email);
 
     if (isAlreadySigned) {
       return res.status(400).json({
         status: res.statusCode,
-        message: 'User already signed',
+        message: 'Email is invalid or has been taken',
       });
     }
 
@@ -52,7 +60,7 @@ accountRouter
 
   .post('/login', async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { email, password }: AccountLoginDto = req.body;
 
       // findByEmail user by provided email
       const user = await UserRecord.findByEmail(email);
@@ -87,21 +95,12 @@ accountRouter
         },
       );
 
-      if (user.role === 'user') {
-        return res.status(200).json({
-          status: res.statusCode,
-          role: user.role,
-          userId: user.userId,
-          token,
-        });
-      }
-
-      if (user.role === 'admin') {
-        return res.status(200).json({
-          status: res.statusCode,
-          token,
-        });
-      }
+      res.status(200).json({
+        status: res.statusCode,
+        role: user.role,
+        userId: user.userId,
+        token,
+      });
     } catch (err) {
       res.status(500).json({
         status: res.statusCode,
