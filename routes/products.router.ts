@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { ProductRecord } from "../records";
-
+import { ProductRecord } from '../records';
 
 export const productsRouter = Router();
 
@@ -10,16 +9,16 @@ productsRouter
     const found = await ProductRecord.find(req.params.name ?? '');
 
     const products = found.map((product) => {
-      return {
-        ...product,
-        qtyInBasket: 0, // req.body.qtyInBasket??
-      };
+      return product;
     });
 
     if (products.length === 0) {
-      res.json(`No results were found matching ${req.params.name}`);
+      res.status(404).json({
+        status: res.statusCode,
+        message: `No results were found matching ${req.params.name}`,
+      });
     } else {
-      res.json(products);
+      res.status(200).json(products);
     }
   })
 
@@ -27,9 +26,12 @@ productsRouter
   .get('/bestsellers', async (req, res) => {
     const products = await ProductRecord.getBestsellers();
     if (products === null) {
-      res.json(`No best selling products were found yet`);
+      res.status(404).json({
+        status: res.statusCode,
+        message: 'No best selling products were found yet',
+      });
     } else {
-      res.json(products);
+      res.status(200).json(products);
     }
   })
 
@@ -37,15 +39,11 @@ productsRouter
   .get('/:id', async (req, res) => {
     const product = await ProductRecord.getOne(req.params.id);
     if (product === null) {
-      res.json(`Cannot find product with id ${req.params.id}`);
+      res.status(404).json({
+        status: res.statusCode,
+        message: `Cannot find product with id ${req.params.id}`,
+      });
     } else {
-      res.json(product);
+      res.status(200).json(product);
     }
-  })
-
-  // send data from FE to db
-  .post('/', async (req, res) => {
-    const product = new ProductRecord(req.body);
-    await product.insert();
-    res.json(product);
   });
