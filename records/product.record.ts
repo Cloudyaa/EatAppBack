@@ -58,7 +58,6 @@ export class ProductRecord implements ProductEntity {
     obj.productId ? (this.productId = obj.productId) : null;
     this.name = obj.name;
     this.price = obj.price;
-    obj.qtyInBasket ? (this.qtyInBasket = obj.qtyInBasket) : (this.qtyInBasket = 0);
     this.description = obj.description;
     this.lifeInDays = obj.lifeInDays;
     this.energy = obj.energy;

@@ -2,7 +2,6 @@ export interface SimpleProductEntity {
   productId: string;
   name: string;
   price: number;
-  qtyInBasket?: number;
 }
 
 export interface Nutrition {
