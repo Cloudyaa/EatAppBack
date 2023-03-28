@@ -23,7 +23,7 @@ test('UserRecord.insert inserts data to database', async () => {
 // -- end of testing insert(productId) method
 
 // -- testing findByEmail() method
-test('UserRecord returns data from database for one entry', async () => {
+test('UserRecord returns data from database for one entry when searching by email', async () => {
   const user = await UserRecord.findByEmail('user@eat.com');
   expect(user).toBeDefined();
   expect(user?.userId).toBe('86ba84a3-d5ad-409f-9083-40caff1e4af5');
@@ -31,14 +31,14 @@ test('UserRecord returns data from database for one entry', async () => {
   expect(user?.password).toBeTruthy();
 });
 
-test('UserRecord returns null from database for not existing entry', async () => {
+test('UserRecord returns null from database for not existing entry when searching by email', async () => {
   const user = await UserRecord.findByEmail('loremIpsum');
   expect(user).toBeNull();
 });
 // --end of testing findByEmail() method
 
 // -- testing findById() method
-test('UserRecord returns data from database for one entry when searching by email', async () => {
+test('UserRecord returns data from database for one entry when searching by ID', async () => {
   const user = await UserRecord.findById('86ba84a3-d5ad-409f-9083-40caff1e4af5');
   expect(user).toBeDefined();
   expect(user?.userId).toBe('86ba84a3-d5ad-409f-9083-40caff1e4af5');
