@@ -9,7 +9,6 @@ export class ProductRecord implements ProductEntity {
   productId: string;
   name: string;
   price: number;
-  qtyInBasket?: number;
   description: string;
   lifeInDays: number;
   energy: number;
