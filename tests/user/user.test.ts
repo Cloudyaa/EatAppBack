@@ -38,14 +38,14 @@ test('UserRecord returns null from database for not existing entry', async () =>
 // --end of testing findByEmail() method
 
 // -- testing findById() method
-test('UserRecord returns data from database for one entry', async () => {
+test('UserRecord returns data from database for one entry when searching by email', async () => {
   const user = await UserRecord.findById('86ba84a3-d5ad-409f-9083-40caff1e4af5');
   expect(user).toBeDefined();
   expect(user?.userId).toBe('86ba84a3-d5ad-409f-9083-40caff1e4af5');
   expect(user?.email).toBe('user@eat.com');
 });
 
-test('UserRecord returns null from database for not existing entry', async () => {
+test('UserRecord returns null from database for not existing entry when searching by ID', async () => {
   const user = await UserRecord.findById('loremIpsum');
   expect(user).toBeNull();
 });

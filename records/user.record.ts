@@ -2,7 +2,7 @@ import moment from 'moment';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
 import { NewUserEntity, SafeUserEntity, SimpleUserEntity, UserEntity } from '../types';
-import { pool } from "../utlis";
+import { pool } from '../utlis';
 
 type UserRecordResults = [UserEntity[], FieldPacket[]];
 type SafeUserRecordResults = [SafeUserEntity[], FieldPacket[]];
@@ -70,16 +70,17 @@ export class UserRecord implements UserEntity {
       },
     )) as SafeUserRecordResults;
 
+    if (results.length === 0) {
+      return null;
+    }
     const { role, email, updatedAt, createdAt } = results[0];
-    return results.length === 0
-      ? null
-      : {
-          userId,
-          role,
-          email,
-          updatedAt,
-          createdAt,
-        };
+    return {
+      userId,
+      role,
+      email,
+      updatedAt,
+      createdAt,
+    };
   }
 
   async insert(): Promise<string> {
