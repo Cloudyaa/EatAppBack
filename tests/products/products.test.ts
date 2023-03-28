@@ -43,8 +43,8 @@ test('ProductRecord returns data from database for one entry', async () => {
 });
 
 test('ProductRecord returns null from database for not existing entry', async () => {
-  const ad = await ProductRecord.getOne('loremIpsum');
-  expect(ad).toBeNull();
+  const product = await ProductRecord.getOne('loremIpsum');
+  expect(product).toBeNull();
 });
 // --end of testing getOne() method
 
