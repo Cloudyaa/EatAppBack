@@ -1,9 +1,13 @@
 import { SimpleProductEntity } from '../product';
 
-export interface OrderDTO {
+export interface BasketDTO {
   products: OrderedProductEntity[];
   totalQty: number;
-  totalPrice: number;
+  totalValue: number;
+}
+
+export interface OrderEntity extends BasketDTO {
+  userId: string;
 }
 
 export interface OrderedProductEntity extends SimpleProductEntity {
