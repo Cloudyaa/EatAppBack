@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { UserRecord } from "../records";
-
+import { OrderRecord, UserRecord } from '../records';
 
 export const adminRouter = Router();
 
@@ -11,11 +10,16 @@ adminRouter
   .get('/', async (req, res) => {
     res.json({
       status: res.statusCode,
-      message: 'Welcome to admin panel',
+      message: 'success',
     });
   })
 
   .get('/manage/users', async (req, res) => {
     const users = await UserRecord.getAll();
-    res.json(users);
+    res.status(200).json(users);
+  })
+
+  .get('/manage/orders', async (req, res) => {
+    const users = await OrderRecord.getAllOrders();
+    res.status(200).json(users);
   });
