@@ -19,20 +19,29 @@ export const authMiddleware =
       const decodedToken = jwt.verify(token, JWT_SECRET) as AuthUser;
 
       // if user is not authorized to access the requested dashboard
-      if (requiredRole === 'user' && decodedToken.userId !== req.params.id) {
-        return res.status(401).json({ message: 'You are not authorized to access this dashboard' });
+      if (requiredRole === 'user' && decodedToken.userId !== req.params.userId) {
+        return res.status(401).json({
+          status: res.statusCode,
+          message: 'You are not authorized to access this page',
+        });
       }
 
       // if role of the user in the decoded token is different from the requiredRole
       if (decodedToken.role !== requiredRole) {
-        return res.status(403).json({ message: 'Forbidden' });
+        return res.status(403).json({
+          status: res.statusCode,
+          message: 'Forbidden: Access is denied',
+        });
       }
 
       const user = await UserRecord.findById(decodedToken.userId);
 
       // if user wants access to admin panel
       if (user && user.role !== requiredRole) {
-        return res.status(403).json({ message: 'Forbidden' });
+        return res.status(403).json({
+          status: res.statusCode,
+          message: 'Forbidden: Access is denied',
+        });
       }
 
       next();
@@ -41,9 +50,15 @@ export const authMiddleware =
 
       // if not logged person wants access to admin panel or token expired
       if (error instanceof jwt.TokenExpiredError) {
-        res.status(401).json({ message: 'Token has expired' });
+        res.status(401).json({
+          status: res.statusCode,
+          message: 'Token has expired'
+        });
       } else {
-        res.status(401).json({ message: 'Unauthorized' });
+        res.status(401).json({
+          status: res.statusCode,
+          message: 'You are not authorized to access this page'
+        });
       }
     }
   };
