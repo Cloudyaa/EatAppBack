@@ -1,18 +1,56 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { UserRecord } from '../records';
+import { OrderRecord, UserRecord } from '../records';
 
 export const userRouter = Router();
 
-userRouter.get('/dashboard/:id', authMiddleware('user'), async (req, res) => {
-  const user = await UserRecord.findById(req.params.id);
+userRouter
+  .get('/:userId/dashboard', authMiddleware('user'), async (req, res) => {
+    const user = await UserRecord.findById(req.params.userId);
+    /* prettier-ignore */
+    if (!user) {
+      res.status(404).json({
+        status: res.statusCode,
+        message: "User not found"
+      });
+    }
+    res.status(200).json(user);
+  })
 
-  if (!user) {
-    res.status(404).json({
-      status: res.statusCode,
-      message: 'User not found',
-    });
-  }
+  .get('/:userId/orders', authMiddleware('user'), async (req, res) => {
+    const orders = await OrderRecord.getUserOrders(req.params.userId);
+    if (orders === null) {
+      res.status(404).json({
+        status: res.statusCode,
+        message: `No orders found yet`,
+      });
+    } else {
+      res.status(200).json(orders);
+    }
+  })
 
-  res.json(user);
-});
+  .get('/:userId/order/:orderId', authMiddleware('user'), async (req, res) => {
+    const { userId, orderId } = req.params;
+
+    const order = await OrderRecord.getOrder(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        status: res.statusCode,
+        message: 'Order not found',
+      });
+    }
+
+    // check if the order belongs to user
+    const isUserOrder = order?.userId === userId;
+
+    if (!isUserOrder) {
+      return res.status(403).json({
+        status: res.statusCode,
+        message: `You are not authorized to see this page`,
+      });
+    }
+
+    const products = await OrderRecord.getOrderedProducts(orderId);
+    res.status(200).json({ order, products });
+  });
