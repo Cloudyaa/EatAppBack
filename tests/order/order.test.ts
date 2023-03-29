@@ -3,56 +3,71 @@ import { testOrder } from './testingRecord';
 import { OrderRecord } from '../../records';
 
 afterAll(async () => {
+  await pool.execute("DELETE FROM `order_details` WHERE `productId` = 'test_product1'");
   await pool.execute("DELETE FROM `orders` WHERE `userId` = 'test_user'");
   await pool.end();
 });
 
-// -- testing getOne() method
-test('OrderRecord returns data from database for one entry', async () => {
-  const order = await OrderRecord.getOne('first_order');
+// -- testing getOrder() method
+test('OrderRecord.getOrder() returns order data from database', async () => {
+  const order = await OrderRecord.getOrder('first_order');
   expect(order).toBeDefined();
-  expect(order?.userId).toBe('dd11334e-d915-48a1-87ff-378379a6e586');
   expect(order?.totalValue).toBe(420);
+  expect(order?.totalQty).toBe(99);
 });
 
-test('OrderRecord returns null from database for not existing entry', async () => {
-  const order = await OrderRecord.getOne('loremIpsum');
+test('OrderRecord.getOrder() returns null from database for not existing order', async () => {
+  const order = await OrderRecord.getOrder('loremIpsum');
   expect(order).toBeNull();
 });
-// --end of testing getOne() method
+// --end of testing getOrder() method
 
-// -- testing insert() method
-test('UserRecord.insert inserts data to database', async () => {
-  const order = new OrderRecord({
-    ...testOrder,
-  });
-
-  await order.insert();
-
-  const newOrder = await OrderRecord.getOne(order.orderId);
-  expect(newOrder).toBeDefined();
-  expect(newOrder).not.toBeNull();
-  expect(newOrder?.userId).toBe(order.userId);
+// -- testing getOrderedProducts() method
+test('OrderRecord.getOrderedProducts() returns ordered products from database for existing order', async () => {
+  const order = await OrderRecord.getOrderedProducts('first_order');
+  expect(order).toBeDefined();
+  expect(order?.length).toBe(2);
 });
-// -- end of testing insert() method
+
+test('OrderRecord.getOrderedProducts()  returns null from database for not existing order', async () => {
+  const order = await OrderRecord.getOrderedProducts('loremIpsum');
+  expect(order).toBeNull();
+});
+// --end of testing getOrderedProducts() method
 
 // -- testing getUserOrders() method
-test('OrderRecord returns user orders', async () => {
-  const orders = await OrderRecord.getUserOrders('dd11334e-d915-48a1-87ff-378379a6e586');
-  expect(orders).toBeDefined();
-  expect(orders).not.toBeNull();
+test('OrderRecord.getUserOrders() returns order data from database', async () => {
+  const order = await OrderRecord.getUserOrders('25cc95b3-c83f-4262-af4a-52b9e0a761f6');
+  expect(order).toBeDefined();
+  expect(order?.length).toBe(2);
+  expect(order && order[1].orderId).toBe('second_order');
 });
 
-test('OrderRecord returns null when user has no orders yet', async () => {
-  const order = await OrderRecord.getUserOrders('86ba84a3-d5ad-409f-9083-40caff1e4af5');
+test('OrderRecord.getUserOrders() returns null from database for not existing user', async () => {
+  const order = await OrderRecord.getUserOrders('loremIpsum');
   expect(order).toBeNull();
 });
 // --end of testing getUserOrders() method
 
-// -- testing getAll() method
+// -- testing getAllOrders() method
 test('OrderRecord returns all orders', async () => {
-  const orders = await OrderRecord.getAll();
+  const orders = await OrderRecord.getAllOrders();
   expect(orders).toBeDefined();
   expect(orders).not.toBeNull();
 });
-// --end of testing getAll) method
+// --end of testing getAllOrders() method
+
+// -- testing saveOrder() method
+test('UserRecord.saveOrder inserts data to database', async () => {
+  const order = new OrderRecord({
+    ...testOrder,
+  });
+
+  await order.saveOrder();
+
+  const newOrder = await OrderRecord.getOrder(order.orderId);
+  expect(newOrder).toBeDefined();
+  expect(newOrder).not.toBeNull();
+  expect(newOrder?.orderId).toBe(order.orderId);
+});
+// -- end of testing saveOrder() method
