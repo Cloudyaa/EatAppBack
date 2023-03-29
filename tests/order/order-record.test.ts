@@ -1,13 +1,13 @@
-import { testBasketProduct, testOrder } from './testingRecord';
+import { testBasket, testOrder } from './testingRecord';
 import { OrderRecord } from '../../records';
 
 let errMessage: string;
 
 test('Can build OrderRecord', () => {
-  expect(testOrder.products).toStrictEqual([{ ...testBasketProduct }]);
-  expect(testOrder.totalQty).toStrictEqual(3);
-  expect(testOrder.totalValue).toStrictEqual(3 * 1.29);
-  expect(testOrder.userId).toStrictEqual('25cc95b3-c83f-4262-af4a-52b9e0a761f6');
+  expect(testOrder.products).toStrictEqual([...testBasket]);
+  expect(testOrder.totalQty).toStrictEqual(4);
+  expect(testOrder.totalValue).toStrictEqual(3 * 1.29 + 3.59);
+  expect(testOrder.userId).toStrictEqual('test_user');
 });
 
 test('Throws when order is empty', () => {
