@@ -4,7 +4,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import 'express-async-errors';
 import 'express-rate-limit';
-import { handleError } from "./utlis";
+import { handleError } from './utlis';
 import { config } from './config/config';
 import { accountRouter, adminRouter, productsRouter, userRouter } from './routes';
 
