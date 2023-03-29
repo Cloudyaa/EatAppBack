@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
 import { NewUserEntity, SafeUserEntity, SimpleUserEntity, UserEntity } from '../types';
@@ -90,25 +89,14 @@ export class UserRecord implements UserEntity {
       throw new Error('Cannot insert something that is already in database');
     }
 
-    if (!this.createdAt) {
-      this.createdAt = moment().format('YYYY-MM-DD hh:mm:ss');
-    }
-
-    if (!this.updatedAt) {
-      this.updatedAt = moment().format('YYYY-MM-DD hh:mm:ss');
-    }
-
     await pool.execute(
-      'INSERT INTO `users` VALUES (:userId, :email, :password, :createdAt, :updatedAt)',
+      'INSERT INTO `users` (`userId`, `email`, `password`) VALUES (:userId, :email, :password)',
       this,
     );
-    await pool.execute(
-      'INSERT INTO `user_roles` VALUES (:userId, :roleId, :createdAt, :updatedAt)',
-      {
-        ...this,
-        roleId: this.role === 'user' ? 'role_user' : 'role_admin',
-      },
-    );
+    await pool.execute('INSERT INTO `user_roles` (`userId`, `roleId`)  VALUES (:userId, :roleId)', {
+      userId: this.userId,
+      roleId: this.role === 'user' ? 'role_user' : 'role_admin',
+    });
 
     return this.userId;
   }
