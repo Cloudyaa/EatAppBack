@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { OrderRecord, UserRecord } from '../records';
+import { OrderDTO } from '../types';
 
 export const userRouter = Router();
 
@@ -27,6 +28,21 @@ userRouter
     } else {
       res.status(200).json(orders);
     }
+  })
+
+  .post('/:userId/order/new', authMiddleware('user'), async (req, res) => {
+    const userOrder: OrderDTO = req.body;
+
+    const newOrder = new OrderRecord({
+      ...userOrder,
+    });
+
+    await newOrder.saveOrder();
+
+    res.status(200).json({
+      status: res.statusCode,
+      message: 'Order created successfully',
+    });
   })
 
   .get('/:userId/order/:orderId', authMiddleware('user'), async (req, res) => {
