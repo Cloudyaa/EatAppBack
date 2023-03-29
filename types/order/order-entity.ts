@@ -1,22 +1,39 @@
 import { SimpleProductEntity } from '../product';
 
-export interface BasketDTO {
-  products: OrderedProductEntity[];
-  totalQty: number;
+export interface SimpleOrderEntity {
+  orderNo: number;
+  orderId: string;
+  createdAt: string;
   totalValue: number;
 }
 
-export interface OrderEntity extends BasketDTO {
-  orderId: string;
+export interface DetailedOrderEntity {
+  productId: string;
+  orderedQty: number;
+}
+
+export interface OrderedProductEntity extends SimpleProductEntity, DetailedOrderEntity {}
+
+export interface OrderDTO {
+  products: OrderedProductEntity[];
+  totalQty: number;
+  totalValue: number;
   userId: string;
+}
+
+export interface OrderEntity extends OrderDTO {
+  orderNo: number;
+  orderId: string;
   createdAt: string;
+  updatedAt: string;
+  status: 'pending' | 'dispatched' | 'completed';
 }
 
-export interface OrderedProductEntity extends SimpleProductEntity {
-  qtyInBasket: number;
-}
-
-export interface NewOrderEntity extends Omit<OrderEntity, 'orderId' | 'createdAt'> {
+export interface NewOrderEntity
+  extends Omit<OrderEntity, 'orderId' | 'createdAt' | 'updatedAt' | 'orderNo' | 'status'> {
+  orderNo?: number;
   orderId?: string;
   createdAt?: string;
+  updatedAt?: string;
+  status?: 'pending' | 'dispatched' | 'completed';
 }
