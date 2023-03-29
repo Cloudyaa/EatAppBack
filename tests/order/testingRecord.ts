@@ -1,22 +1,30 @@
-import { NewOrderEntity, OrderedProductEntity } from "../../types";
+import { NewOrderEntity, OrderedProductEntity } from '../../types';
 
-export const testBasketProduct: OrderedProductEntity = {
-  productId: '106c939a-9f76-4bda-a283-55d8b7155310',
-  name: 'carrots',
-  price: 1.29,
-  qtyInBasket: 3,
-};
+export const testBasket: OrderedProductEntity[] = [
+  {
+    productId: 'test_product1',
+    name: 'carrots',
+    price: 1.29,
+    orderedQty: 3,
+  },
+  {
+    productId: 'test_product1',
+    name: 'oranges',
+    price: 3.59,
+    orderedQty: 1,
+  },
+];
 
 export const testOrder: NewOrderEntity = {
-  products: [testBasketProduct],
+  products: testBasket,
   totalQty: 0,
   totalValue: 0,
   userId: 'test_user',
 };
 
-testOrder.totalQty = testOrder.products.reduce((total, product) => total + product.qtyInBasket, 0);
+testOrder.totalQty = testOrder.products.reduce((total, product) => total + product.orderedQty, 0);
 
 testOrder.totalValue = testOrder.products.reduce(
-  (total, product) => total + product.price * product.qtyInBasket,
+  (total, product) => total + product.price * product.orderedQty,
   0,
 );
