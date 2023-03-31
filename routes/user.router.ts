@@ -23,7 +23,7 @@ userRouter
     if (orders === null) {
       res.status(404).json({
         status: res.statusCode,
-        message: `No orders found yet`,
+        message: 'No orders found yet',
       });
     } else {
       res.status(200).json(orders);
@@ -33,9 +33,7 @@ userRouter
   .post('/:userId/order/new', authMiddleware('user'), async (req, res) => {
     const userOrder: OrderDTO = req.body;
 
-    const newOrder = new OrderRecord({
-      ...userOrder,
-    });
+    const newOrder = new OrderRecord(userOrder);
 
     await newOrder.saveOrder();
 
