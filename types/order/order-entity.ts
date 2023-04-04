@@ -37,3 +37,9 @@ export interface NewOrderEntity
   updatedAt?: string;
   status?: 'pending' | 'dispatched' | 'completed';
 }
+
+export interface SuccessOrderResponse {
+  status: number;
+  message: string;
+  orderNumber: number;
+}
