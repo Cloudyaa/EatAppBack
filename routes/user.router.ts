@@ -37,9 +37,12 @@ userRouter
 
     await newOrder.saveOrder();
 
+    const orderNumber = await OrderRecord.getOrderNumber(newOrder.orderId);
+
     res.status(200).json({
       status: res.statusCode,
       message: 'Order created successfully',
+      orderNumber,
     });
   })
 

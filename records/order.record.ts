@@ -122,4 +122,15 @@ export class OrderRecord implements OrderEntity {
       })();
     });
   }
+
+  static async getOrderNumber(orderId: string): Promise<number | null> {
+    const [results] = (await pool.execute(
+      'SELECT `orderNo` FROM `orders` WHERE `orderId` = :orderId',
+      {
+        orderId,
+      },
+    )) as OrderRecordResults;
+
+    return results.length === 0 ? null : results[0].orderNo;
+  }
 }

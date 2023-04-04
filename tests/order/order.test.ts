@@ -71,3 +71,12 @@ test('UserRecord.saveOrder inserts data to database', async () => {
   expect(newOrder?.orderId).toBe(order.orderId);
 });
 // -- end of testing saveOrder() method
+
+// -- testing getOrderNumber() method
+test('OrderRecord returns all orders', async () => {
+  const orders = await OrderRecord.getOrderNumber('first_order');
+  expect(orders).toBeDefined();
+  expect(orders).not.toBeNull();
+  expect(orders).toBe(1);
+});
+// --end of testing getOrderNumber() method
