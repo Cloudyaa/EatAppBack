@@ -1,4 +1,4 @@
-import express, { json } from 'express';
+import express, { json, Router } from "express";
 import dotenv from 'dotenv';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
@@ -25,12 +25,16 @@ app.use(
   }),
 );
 
+const router = Router();
+
 //routes
-app.use('/api/products', productsRouter);
-app.use('/api/account', accountRouter);
-app.use('/api/user', userRouter);
-app.use('/api/admin', adminRouter);
+router.use('/products', productsRouter);
+router.use('/account', accountRouter);
+router.use('/user', userRouter);
+router.use('/admin', adminRouter);
 //end of routes
+
+app.use('/api', router);
 
 app.use(handleError);
 
