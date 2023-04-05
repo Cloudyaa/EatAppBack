@@ -52,12 +52,12 @@ export const authMiddleware =
       if (error instanceof jwt.TokenExpiredError) {
         res.status(401).json({
           status: res.statusCode,
-          message: 'Token has expired'
+          message: 'Token has expired',
         });
       } else {
         res.status(401).json({
           status: res.statusCode,
-          message: 'You are not authorized to access this page'
+          message: 'You are not authorized to access this page',
         });
       }
     }
