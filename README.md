@@ -65,3 +65,4 @@ Incoming improvements and updates:
 - show delivery address on checkout view,
 - sending message through contact form (now it doesn't send it anywhere)
 
+If you would like to see more of what is coming, [here](https://trello.com/b/Ct6c3aRV) is my Trello board with all To-dos left.
