@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import { authMiddleware } from '../middleware/auth.middleware';
-import { OrderRecord, ProductRecord, UserRecord } from "../records";
+import { authMiddleware } from '../../middleware/auth.middleware';
+import { UserRecord } from '../../records';
+import { manageProducts } from './manageProducts.router';
+import { manageOrders } from './manageOrders.router';
 
 export const adminRouter = Router();
 
@@ -26,14 +28,5 @@ adminRouter
     res.status(200).json(users);
   })
 
-  .get('/manage/orders', async (req, res) => {
-    const orders = await OrderRecord.getAllOrders();
-    res.status(200).json(orders);
-  })
-
-  .get('/manage/products', async (req, res) => {
-    const products = await ProductRecord.find('');
-    res.status(200).json(products);
-  })
-
-;
+  .use('/manage/orders', manageOrders)
+  .use('/manage/products', manageProducts);
