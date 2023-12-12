@@ -13,7 +13,6 @@ const storage = multer.diskStorage({
     cb(null, productImagePath);
   },
   filename: function (req, file, cb) {
-    console.log(file);
     cb(null, file.originalname);
   },
 });
@@ -111,8 +110,6 @@ manageProducts
 
     // Specify the file path where you want to save the image
     const filePath = `${productImagePath}/${fileName}`;
-
-    console.log(filePath);
 
     // Write the file buffer to the file
     fileBuffer && fs.writeFileSync(filePath, fileBuffer);
