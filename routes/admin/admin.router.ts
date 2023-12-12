@@ -23,10 +23,10 @@ adminRouter
     });
   })
 
-  .get('/manage/users', async (req, res) => {
+  .get('/:adminId/manage/users', async (req, res) => {
     const users = await UserRecord.getAll();
     res.status(200).json(users);
   })
 
-  .use('/manage/orders', manageOrders)
-  .use('/manage/products', manageProducts);
+  .use('/:adminId/manage/orders', manageOrders)
+  .use('/:adminId/manage/products', manageProducts);
