@@ -55,7 +55,7 @@ This is example:
 npm run start
 ```
 
-Please note that you will be running only server Backend-End version of this app. To run this app in full version, start Front-End app as well. You can find instruction for that on Front-End repository.
+Please note that you will be running only server Back-End version of this app. To run this app in full version, start Front-End app as well. You can find instruction for that on Front-End repository.
 
 ## Future
 
