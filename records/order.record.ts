@@ -1,4 +1,10 @@
-import { DetailedOrderEntity, NewOrderEntity, OrderedProductEntity, OrderEntity } from '../types';
+import {
+  DetailedOrderEntity,
+  NewOrderEntity,
+  OrderedProductEntity,
+  OrderEntity,
+  SafeUserEntity,
+} from '../types';
 import { pool, ValidationError } from '../utlis';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
@@ -132,5 +138,12 @@ export class OrderRecord implements OrderEntity {
     )) as OrderRecordResults;
 
     return results.length === 0 ? null : results[0].orderNo;
+  }
+
+  async update(): Promise<void> {
+    await pool.execute('UPDATE `orders` SET `status` = :status WHERE `orderId` = :orderId', {
+      status: this.status,
+      orderId: this.orderId,
+    });
   }
 }
