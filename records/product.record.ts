@@ -90,10 +90,41 @@ export class ProductRecord implements ProductEntity {
     return this.productId;
   }
 
+  async update(): Promise<void> {
+    await pool.execute(
+      'UPDATE `products` SET `name` = :name, `description` = :description, `lifeInDays` = :lifeInDays,`price` = :price, `energy` = :energy, `fat` = :fat, `protein` = :protein, `fibre` = :fibre, `sugars` = :sugars, `salt` = :salt WHERE `productId` = :productId',
+      this,
+    );
+  }
+
+  static async delete(productId: string): Promise<void> {
+    await pool.execute('DELETE FROM `products` WHERE `productId` = :productId', {
+      productId,
+    });
+  }
+
   static async find(name: string): Promise<SimpleProductEntity[]> {
     const [results] = (await pool.execute('SELECT * FROM `products` WHERE `name` LIKE :search', {
       search: `%${name}%`,
     })) as ProductsRecordResults;
+
+    return results.map((result) => {
+      const { productId, name, price } = result;
+      return {
+        productId,
+        name,
+        price,
+      };
+    });
+  }
+
+  static async findById(productId: string): Promise<SimpleProductEntity[]> {
+    const [results] = (await pool.execute(
+      'SELECT * FROM `products` WHERE `productId` = :productId',
+      {
+        productId,
+      },
+    )) as ProductsRecordResults;
 
     return results.map((result) => {
       const { productId, name, price } = result;

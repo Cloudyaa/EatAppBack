@@ -21,3 +21,5 @@ export interface ProductEntity extends SimpleProductEntity, Nutrition {
 export interface NewProductEntity extends Omit<ProductEntity, 'productId'> {
   productId?: string;
 }
+
+export type ProductDTO = NewProductEntity;

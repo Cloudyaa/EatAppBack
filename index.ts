@@ -1,4 +1,4 @@
-import express, { json, Router } from 'express';
+import express, { json, urlencoded, Router } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
@@ -24,6 +24,9 @@ app.use(
     max: 100, // Limit each IP to 100 requests per 'window' (here, per 5 minutes)
   }),
 );
+
+app.use(json({ limit: '10mb' }));
+app.use(urlencoded({ limit: '10mb', extended: true }));
 
 const router = Router();
 
