@@ -42,4 +42,47 @@ export interface SuccessOrderResponse {
   status: number;
   message: string;
   orderNumber: number;
+  orderId: string;
 }
+
+export interface StripeSessionResponse extends Omit<SuccessOrderResponse, 'orderId'> {
+  session: StripeSession;
+}
+
+type StripeSession = {
+  id: string;
+  object: string;
+  address: {
+    city: string;
+    country: string;
+    line1: string;
+    line2: string;
+    postal_code: string;
+    state: string;
+  };
+  balance: number;
+  created: number;
+  currency: string | null;
+  default_source: string | null;
+  delinquent: boolean;
+  description: string | null;
+  discount: any;
+  email: string | null;
+  invoice_prefix: string;
+  invoice_settings: {
+    custom_fields: any[] | null;
+    default_payment_method: string | null;
+    footer: string | null;
+    rendering_options: any | null;
+  };
+  livemode: boolean;
+  metadata: {
+    order_id: string;
+  };
+  name: string | null;
+  next_invoice_sequence: number;
+  phone: string | null;
+  preferred_locales: string[];
+  shipping: any;
+  tax_exempt: string;
+};
