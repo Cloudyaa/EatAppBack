@@ -1,7 +1,17 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { OrderRecord, UserRecord } from '../records';
+import { OrderRecord, ProductRecord, UserRecord } from '../records';
 import { OrderDTO } from '../types';
+import { config } from '../config/config';
+import { captureOrder, createPaypalOrder } from '../utlis/paypal';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const stripe = require('stripe')(config.stripeSecret);
+
+type OrderedItemStripeType = {
+  price: string;
+  quantity: number;
+};
 
 export const userRouter = Router();
 
@@ -30,6 +40,78 @@ userRouter
     }
   })
 
+  .post('/:userId/order/paypal/:orderId', authMiddleware('user'), async (req, res) => {
+    const { orderId } = req.params;
+    try {
+      const { jsonResponse, httpStatusCode } = await captureOrder(orderId);
+      res.status(httpStatusCode).json(jsonResponse);
+    } catch (error) {
+      console.error('Failed to create order:', error);
+      res.status(500).json({ error: 'Failed to capture order.' });
+    }
+  })
+
+  .get('/:userId/order/stripe/:orderId', authMiddleware('user'), async (req, res) => {
+    const { userId, orderId } = req.params;
+
+    const userOrders = await OrderRecord.getUserOrders(userId);
+    const order = await OrderRecord.getOrder(orderId);
+    const orderedProducts = await OrderRecord.getOrderedProducts(orderId);
+
+    const shouldAddDiscount = userOrders?.length === 1;
+    const shouldAddDeliveryFee = order!.totalValue <= 50;
+
+    const getOrderedItems = async (): Promise<OrderedItemStripeType[]> => {
+      const items: OrderedItemStripeType[] = [];
+
+      if (!orderedProducts) {
+        return [];
+      }
+
+      await Promise.all(
+        orderedProducts.map(async (item) => {
+          const priceId = await ProductRecord.getPriceId(item.productId);
+          const orderedItem: OrderedItemStripeType = {
+            price: String(priceId),
+            quantity: Number(item.orderedQty),
+          };
+          items.push(orderedItem);
+        }),
+      );
+
+      if (shouldAddDeliveryFee) {
+        items.push({
+          price: 'price_1OYxG6FXYDkmMsSlUMfG0XRD',
+          quantity: 1,
+        });
+      }
+
+      return items;
+    };
+
+    const session = await stripe.checkout.sessions.create({
+      success_url: `http://localhost:3000/basket/order/success/${order?.orderNo}`,
+      cancel_url: 'http://localhost:3000/basket/order/checkout',
+      payment_method_types: ['card', 'p24', 'blik'],
+      line_items: await getOrderedItems(),
+      discounts: shouldAddDiscount
+        ? [
+            {
+              coupon: 'FIRST_ORDER',
+            },
+          ]
+        : [],
+      mode: 'payment',
+    });
+
+    res.status(200).json({
+      status: res.statusCode,
+      message: 'Can redirect to payment',
+      orderNumber: order?.orderNo,
+      session,
+    });
+  })
+
   .post('/:userId/order/new', authMiddleware('user'), async (req, res) => {
     const userOrder: OrderDTO = req.body;
 
@@ -37,12 +119,18 @@ userRouter
 
     await newOrder.saveOrder();
 
-    const orderNumber = await OrderRecord.getOrderNumber(newOrder.orderId);
+    const id = newOrder.orderId;
+
+    const orderNumber = await OrderRecord.getOrderNumber(id);
+
+    const { jsonResponse } = await createPaypalOrder(userOrder);
 
     res.status(200).json({
       status: res.statusCode,
       message: 'Order created successfully',
       orderNumber,
+      orderId: id,
+      paypalResponse: jsonResponse,
     });
   })
 
