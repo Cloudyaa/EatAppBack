@@ -17,6 +17,7 @@ export class ProductRecord implements ProductEntity {
   fibre: number;
   sugars: number;
   salt: number;
+  priceId: string;
 
   constructor(obj: NewProductEntity) {
     if (!obj.name || obj.name.length > 100) {
@@ -65,6 +66,7 @@ export class ProductRecord implements ProductEntity {
     this.fibre = obj.fibre;
     this.sugars = obj.sugars;
     this.salt = obj.salt;
+    this.priceId = obj.priceId;
   }
 
   static async getOne(id: string): Promise<ProductRecord | null> {
@@ -83,7 +85,7 @@ export class ProductRecord implements ProductEntity {
     }
 
     await pool.execute(
-      'INSERT INTO `products` VALUES (:productId, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt)',
+      'INSERT INTO `products` VALUES (:productId, :name, :description, :lifeInDays, :price, :energy, :fat, :protein, :fibre, :sugars, :salt, :priceId)',
       this,
     );
 
@@ -92,7 +94,7 @@ export class ProductRecord implements ProductEntity {
 
   async update(): Promise<void> {
     await pool.execute(
-      'UPDATE `products` SET `name` = :name, `description` = :description, `lifeInDays` = :lifeInDays,`price` = :price, `energy` = :energy, `fat` = :fat, `protein` = :protein, `fibre` = :fibre, `sugars` = :sugars, `salt` = :salt WHERE `productId` = :productId',
+      'UPDATE `products` SET `name` = :name, `description` = :description, `lifeInDays` = :lifeInDays,`price` = :price, `energy` = :energy, `fat` = :fat, `protein` = :protein, `fibre` = :fibre, `sugars` = :sugars, `salt` = :salt, `priceId` = :priceId WHERE `productId` = :productId',
       this,
     );
   }
@@ -154,5 +156,16 @@ export class ProductRecord implements ProductEntity {
         price,
       };
     });
+  }
+
+  static async getPriceId(productId: string): Promise<string | null> {
+    const [results] = (await pool.execute(
+      'SELECT `priceId` FROM `products` WHERE `productId` = :productId',
+      {
+        productId,
+      },
+    )) as ProductsRecordResults;
+
+    return results.length === 0 ? null : results[0].priceId;
   }
 }
