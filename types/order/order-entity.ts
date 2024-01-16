@@ -43,6 +43,7 @@ export interface SuccessOrderResponse {
   message: string;
   orderNumber: number;
   orderId: string;
+  paypalResponse: any;
 }
 
 export interface StripeSessionResponse extends Omit<SuccessOrderResponse, 'orderId'> {

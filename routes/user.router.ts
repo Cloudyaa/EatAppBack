@@ -3,6 +3,7 @@ import { authMiddleware } from '../middleware/auth.middleware';
 import { OrderRecord, ProductRecord, UserRecord } from '../records';
 import { OrderDTO } from '../types';
 import { config } from '../config/config';
+import { captureOrder, createPaypalOrder } from '../utlis/paypal';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const stripe = require('stripe')(config.stripeSecret);
@@ -39,7 +40,18 @@ userRouter
     }
   })
 
-  .get('/:userId/order/payment/:orderId', authMiddleware('user'), async (req, res) => {
+  .post('/:userId/order/paypal/:orderId', authMiddleware('user'), async (req, res) => {
+    const { orderId } = req.params;
+    try {
+      const { jsonResponse, httpStatusCode } = await captureOrder(orderId);
+      res.status(httpStatusCode).json(jsonResponse);
+    } catch (error) {
+      console.error('Failed to create order:', error);
+      res.status(500).json({ error: 'Failed to capture order.' });
+    }
+  })
+
+  .get('/:userId/order/stripe/:orderId', authMiddleware('user'), async (req, res) => {
     const { userId, orderId } = req.params;
 
     const userOrders = await OrderRecord.getUserOrders(userId);
@@ -59,7 +71,6 @@ userRouter
       await Promise.all(
         orderedProducts.map(async (item) => {
           const priceId = await ProductRecord.getPriceId(item.productId);
-          console.log('product priceId: ', priceId);
           const orderedItem: OrderedItemStripeType = {
             price: String(priceId),
             quantity: Number(item.orderedQty),
@@ -112,11 +123,14 @@ userRouter
 
     const orderNumber = await OrderRecord.getOrderNumber(id);
 
+    const { jsonResponse } = await createPaypalOrder(userOrder);
+
     res.status(200).json({
       status: res.statusCode,
       message: 'Order created successfully',
       orderNumber,
       orderId: id,
+      paypalResponse: jsonResponse,
     });
   })
 
