@@ -4,5 +4,7 @@
 //      dbPassword: 'password',
 //      dbDatabase: 'database',
 //      corsOrigin: 'http://localhost:3000',
-//      stripeSecret: ''
+//      stripeSecret: '',
+//      PAYPAL_CLIENT_ID: '',
+//      PAYPAL_CLIENT_SECRET:'',
 // };
